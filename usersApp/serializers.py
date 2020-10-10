@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.db.models import Q
 from . import models
+from rest_framework.authtoken.models import Token
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -71,10 +72,8 @@ class userLoginSerializer(serializers.ModelSerializer):
         if user_obj:
             if not user_obj.check_password(password):
                 raise serializers.ValidationError("Incorrect credentials please try again")
-        
-        data['token'] = "SOME RANDOM TOKEN"
-
+    
+        data['token'] = Token.objects.get(user=user_obj).key
         return data
-
 
 
